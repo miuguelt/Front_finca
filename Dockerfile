@@ -3,9 +3,9 @@ FROM node:20 AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
+COPY . .
 RUN chmod +x node_modules/.bin/tsc
 RUN npx --no-install tsc -b && npx vite build
-COPY . .
 RUN npm run build
 
 # Etapa 2: Servir la aplicación con Nginx
