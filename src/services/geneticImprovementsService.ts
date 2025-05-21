@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8080/geneticImprovements";
+const API_URL = "geneticImprovements";
 
 export const getGeneticImprovements = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await api.get(API_URL);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -13,7 +13,7 @@ export const getGeneticImprovements = async () => {
 
 export const createGeneticImprovement = async (geneticImprovementData: any) => {
   try {
-    const response = await axios.post(API_URL, geneticImprovementData);
+    const response = await api.post(API_URL, geneticImprovementData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const createGeneticImprovement = async (geneticImprovementData: any) => {
 
 export const updateGeneticImprovement = async (id: number, geneticImprovementData: any) => {
   try {
-      const response = await axios.put(`${API_URL}/${id}`, geneticImprovementData);
+      const response = await api.put(`${API_URL}/${id}`, geneticImprovementData);
       return response.data;
   } catch (error) {
       console.error(error);

@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8080/fields";
+const API_URL = "fields";
 
 export const getFields = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await api.get(API_URL);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -13,7 +13,7 @@ export const getFields = async () => {
 
 export const createField = async (fieldData: any) => {
   try {
-    const response = await axios.post(API_URL, fieldData);
+    const response = await api.post(API_URL, fieldData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const createField = async (fieldData: any) => {
 
 export const updateField = async (id: number, fieldData: any) => {
   try {
-      const response = await axios.put(`${API_URL}/${id}`, fieldData);
+      const response = await api.put(`${API_URL}/${id}`, fieldData);
       return response.data;
   } catch (error) {
       console.error(error);

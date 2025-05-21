@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8080/medications";
+const API_URL = "medications";
 
 export const getMedications = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await api.get(API_URL);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -13,7 +13,7 @@ export const getMedications = async () => {
 
 export const createMedication = async (medicationData: any) => {
   try {
-    const response = await axios.post(API_URL, medicationData);
+    const response = await api.post(API_URL, medicationData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const createMedication = async (medicationData: any) => {
 
 export const updateMedication = async (id: number, medicationData: any) => {
   try {
-      const response = await axios.put(`${API_URL}/${id}`, medicationData);
+      const response = await api.put(`${API_URL}/${id}`, medicationData);
       return response.data;
   } catch (error) {
       console.error(error);
