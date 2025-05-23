@@ -2,8 +2,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps \
- && chmod -R a+x node_modules/.bin
+RUN npm install --legacy-peer-deps && chmod +x node_modules/.bin/tsc
 COPY . .
 RUN npm run build
 
