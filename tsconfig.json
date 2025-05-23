@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "jsx": "react-jsx",
+    "jsx": "react-jsx", // Enables JSX support
     "esModuleInterop": true,
-    "strict": true,
     "moduleResolution": "node",
-    "target": "ESNext"
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".", // Base directory for absolute imports
+    "paths": {
+      "@/*": ["src/*"] // Map `@` to `src/`
+    },
+    "strict": true
   },
   "include": ["src/**/*"]
 }
