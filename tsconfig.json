@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  }
+    "jsx": "react-jsx", // Enables JSX support (for React 17+)
+    "esModuleInterop": true, // Allows default imports from modules without default exports
+    "moduleResolution": "node", // Ensures proper resolution of Node.js modules
+    "target": "ESNext", // Modern JavaScript target
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // TypeScript library support
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Source code directory
+    "strict": true // Enforce type safety
+  },
+  "include": ["src/**/*"] // Include all source files
 }
