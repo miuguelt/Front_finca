@@ -10,9 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@heroui/react": "^2.6.11",
-    "@heroui/theme": "^2.4.15",
-    "@heroui/user": "^2.2.15",
+    "@nextui-org/navbar": "npm:@heroui/navbar",
+    "@nextui-org/listbox": "npm:@heroui/listbox",
+    "@nextui-org/user": "npm:@heroui/user",
+    "@nextui-org/modal": "npm:@heroui/modal",
     "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@hookform/resolvers": "^3.9.0",
     "@nextui-org/react": "^2.4.6",
@@ -47,6 +48,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "clsx": "^2.0.0",
     "@eslint/js": "^9.9.0",
     "@types/node": "^22.5.4",
     "@types/qrcode": "^1.5.5",
