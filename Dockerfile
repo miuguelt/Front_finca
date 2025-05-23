@@ -2,7 +2,7 @@
 FROM node:20 AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install --force
 COPY . .
 RUN chmod +x node_modules/.bin/tsc
 RUN npx --no-install tsc -b && npx vite build
