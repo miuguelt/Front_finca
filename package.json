@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@heroui/react": "^2.6.11",
-    "@heroui/theme": "^2.6.9",
+    "@heroui/theme": "^2.4.15",
     "@heroui/user": "^2.6.11",
     "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@hookform/resolvers": "^3.9.0",
