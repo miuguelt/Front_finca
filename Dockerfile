@@ -4,6 +4,7 @@ WORKDIR /app
 
 # Copiar archivos de configuración
 COPY package*.json tsconfig.json ./
+RUN npm install -g typescript
 
 # Instalar dependencias (incluyendo las de desarrollo)
 RUN npm install --legacy-peer-deps
