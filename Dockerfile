@@ -1,18 +1,21 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
-# Crear y asignar permisos al directorio de trabajo
-RUN mkdir -p /app && chown -R node:node /app
+# Crear y establecer el directorio de trabajo
 WORKDIR /app
+
+# Copiar los archivos de configuración con los permisos adecuados
+COPY --chown=node:node package*.json ./
+
+# Cambiar al usuario 'node'
 USER node
 
-# Copiar archivos de configuración e instalar dependencias
-COPY --chown=node:node package*.json ./
+# Instalar dependencias
 RUN npm install --legacy-peer-deps
 
-# Copiar el resto del código fuente
+# Copiar el resto de los archivos
 COPY --chown=node:node . .
 
-# Compilar el proyecto
+# Compilar y construir la aplicación
 RUN npx tsc -b && npx vite build
 
 # Etapa 2: Servir la aplicación con Nginx
