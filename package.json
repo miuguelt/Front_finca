@@ -13,7 +13,7 @@
     "@nextui-org/listbox": "npm:@heroui/listbox",
     "@nextui-org/user": "npm:@heroui/user",
     "@nextui-org/modal": "npm:@heroui/modal",
-    "@blackbox-vision/react-qr-reader": "^5.0.0",
+    "@blackbox-vision/react-qr-reader": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@nextui-org/react": "^2.4.6",
     "@radix-ui/react-accordion": "^1.2.0",
