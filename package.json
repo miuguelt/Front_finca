@@ -47,7 +47,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5.x.x",
+    "typescript": "^5.0.0",
     "clsx": "^2.0.0",
     "@eslint/js": "^9.9.0",
     "@types/node": "^22.5.4",
