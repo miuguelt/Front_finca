@@ -1,19 +1,18 @@
 FROM node:20-alpine AS builder
 
-# Crear y establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de configuración
-COPY package*.json ./
+# Copiar archivos de configuración
+COPY package*.json tsconfig.json ./
 
-# Instalar dependencias y compilar como root
-RUN npm install --legacy-peer-deps && \
-    npm install -g typescript && \
-    npx tsc -b && \
-    npx vite build
+# Instalar dependencias (incluyendo las de desarrollo)
+RUN npm install --legacy-peer-deps
 
-# Copiar el resto de los archivos
+# Copiar el resto del código fuente
 COPY . .
+
+# Compilar y construir la aplicación
+RUN npx tsc -b && npx vite build
 
 # Etapa 2: Servir la aplicación con Nginx
 FROM nginx:alpine
