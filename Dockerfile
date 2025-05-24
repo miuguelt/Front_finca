@@ -1,18 +1,17 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copiar y configurar permisos correctamente
+# Copia solo las dependencias para cachear instalaciones
 COPY package*.json ./
 
-# Instala dependencias y da permisos al binario real de `tsc`
-RUN npm install --legacy-peer-deps && \
-    chmod +x $(readlink -f node_modules/.bin/tsc)
+# Instala dependencias (sin chmod)
+RUN npm install --legacy-peer-deps
 
-# Copia el resto del código
+# Copia el resto de tu código
 COPY . .
 
-# Compila la aplicación
-RUN npm run build
+# Compila la app usando npx para invocar tsc y vite
+RUN npx tsc -b && npx vite build
 
 # Etapa 2: Servir la aplicación con Nginx
 FROM nginx:alpine
