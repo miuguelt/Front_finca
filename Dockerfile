@@ -2,14 +2,18 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copiar archivos de configuración
+# Copiar configuraciones
 COPY package*.json tsconfig.json ./
-RUN npm install -g typescript
 
-# Instalar dependencias (incluyendo las de desarrollo)
+# Instalar dependencias globales y faltantes
+RUN npm install -g typescript && \
+    npm install --save-dev ts-custom-error && \
+    npm install --save classnames clsx tailwind-merge
+
+# Instalar dependencias del proyecto
 RUN npm install --legacy-peer-deps
 
-# Copiar el resto del código fuente
+# Copiar código fuente
 COPY . .
 
 # Compilar y construir la aplicación

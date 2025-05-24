@@ -1,17 +1,8 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx", // Enables JSX support
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".", // Base directory for absolute imports
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"] // Map `@` to `src/`
-    },
-    "strict": true
-  },
-  "include": ["src/**/*"]
+      "@/*": ["./src/*"]
+    }
+  }
 }
