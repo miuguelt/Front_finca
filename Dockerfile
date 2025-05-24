@@ -1,12 +1,17 @@
-# Etapa 1: Construcción de la aplicación
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --legacy-peer-deps && \
-    ls -l node_modules/.bin/tsc && \
-    chmod +x node_modules/.bin/tsc
 
+# Copiar y configurar permisos correctamente
+COPY package*.json ./
+
+# Instala dependencias y da permisos al binario real de `tsc`
+RUN npm install --legacy-peer-deps && \
+    chmod +x $(readlink -f node_modules/.bin/tsc)
+
+# Copia el resto del código
 COPY . .
+
+# Compila la aplicación
 RUN npm run build
 
 # Etapa 2: Servir la aplicación con Nginx
