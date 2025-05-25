@@ -1,10 +1,10 @@
-import api from "./api";
+import axios from "axios";
 
-const API_URL = "species";
+const API_URL = "http://localhost:8080/species";
 
 export const getSpecies = async () => {
   try {
-    const response = await api.get(API_URL);
+    const response = await axios.get(API_URL);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -13,7 +13,7 @@ export const getSpecies = async () => {
 
 export const createSpecie = async (specieData: any) => {
   try {
-    const response = await api.post(API_URL, specieData);
+    const response = await axios.post(API_URL, specieData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const createSpecie = async (specieData: any) => {
 
 export const updateSpecie = async (id: number, specieData: any) => {
   try {
-      const response = await api.put(`${API_URL}/${id}`, specieData);
+      const response = await axios.put(`${API_URL}/${id}`, specieData);
       return response.data;
   } catch (error) {
       console.error(error);

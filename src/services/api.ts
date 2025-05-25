@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://finca.isladigital.xyz/",
+  baseURL: "http://localhost:8080",
 });
 
 export default api;

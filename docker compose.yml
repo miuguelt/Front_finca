@@ -1,0 +1,26 @@
+networks:
+  redbd:
+    external: true
+services:
+  finca:
+    image: 'python:3.12-alpine'
+    build:
+      context: 'https://github.com/miuguelt/fincaVillaLuz-main.git'
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_HOST=$DB_HOST
+      - DB_PORT=$DB_PORT
+      - DB_NAME=$DB_NAME
+    networks:
+      - redbd
+  mifinca:
+    build:
+      context: 'https://github.com/miuguelt/Front_finca.git'
+      dockerfile: Dockerfile
+    image: 'nginx:alpine'
+    restart: always
+    networks:
+      - redbd

@@ -1,10 +1,10 @@
-import api from "./api";
+import axios from "axios";
 
-const API_URL = "vaccines";
+const API_URL = "http://localhost:8080/vaccines";
 
 export const getVaccines = async () => {
   try {
-    const response = await api.get(API_URL);
+    const response = await axios.get(API_URL);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -13,7 +13,7 @@ export const getVaccines = async () => {
 
 export const createVaccine = async (vaccineData: any) => {
   try {
-    const response = await api.post(API_URL, vaccineData);
+    const response = await axios.post(API_URL, vaccineData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const createVaccine = async (vaccineData: any) => {
 
 export const updateVaccine = async (id: number, vaccineData: any) => {
   try {
-      const response = await api.put(`${API_URL}/${id}`, vaccineData);
+      const response = await axios.put(`${API_URL}/${id}`, vaccineData);
       return response.data;
   } catch (error) {
       console.error(error);

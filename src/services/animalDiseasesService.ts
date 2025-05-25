@@ -1,6 +1,6 @@
-import api from "./api";
+import api from "./authService";
 
-const API_URL = "animalDiseases";
+const API_URL = "/animalDiseases";
 
 export const getAnimalDiseases = async () => {
   try {

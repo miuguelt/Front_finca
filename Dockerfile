@@ -5,12 +5,8 @@ WORKDIR /app
 # Copiar configuraciones
 COPY package*.json tsconfig.json ./
 
-RUN npm install -g typescript && \
-    npm install --legacy-peer-deps --save-dev ts-custom-error && \
-    npm install --legacy-peer-deps --save classnames clsx tailwind-merge
-
 # Instalar dependencias del proyecto
-RUN npm install --legacy-peer-deps
+RUN npm install 
 
 # Copiar código fuente
 COPY . .

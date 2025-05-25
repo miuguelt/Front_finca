@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LoginUser} from '../types/userTypes';
 
 const api = axios.create({
-  baseURL: "https://finca.isladigital.xyz/",
+  baseURL: import.meta.env?.VITE_API_BASE_URL,
 });
 
 
@@ -21,6 +21,7 @@ export const loginUser = async (credentials: LoginUser) => {
   }
 };
 
+export default api;
 
 
 
