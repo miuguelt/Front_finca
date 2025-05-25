@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "./authService";
 
-const API_URL = "http://localhost:8080/animals";
+const API_URL = "/animals";
 
 export const getAnimals = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await api.get(API_URL);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -13,7 +13,7 @@ export const getAnimals = async () => {
 
 export const getAnimalStatus = async () => {
   try {
-    const response = await axios.get(`${API_URL}/status`);
+    const response = await api.get(`${API_URL}/status`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const getAnimalStatus = async () => {
 
 export const createAnimal = async (animalData: any) => {
   try {
-    const response = await axios.post(API_URL, animalData);
+    const response = await api.post(API_URL, animalData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -31,7 +31,7 @@ export const createAnimal = async (animalData: any) => {
 
 export const updateAnimal = async (id: number, animalData: any) => {
   try {
-      const response = await axios.put(`${API_URL}/${id}`, animalData);
+      const response = await api.put(`${API_URL}/${id}`, animalData);
       return response.data;
   } catch (error) {
       console.error(error);

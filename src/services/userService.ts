@@ -1,6 +1,6 @@
 import api from "./authService";
 
-// const API_URL = "http://localhost:8080/user";
+// const API_URL = "/user";
 const API_URL =  "/user";
 
 

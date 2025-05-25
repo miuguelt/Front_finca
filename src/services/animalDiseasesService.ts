@@ -1,5 +1,4 @@
 import api from "./authService";
-
 const API_URL = "/animalDiseases";
 
 export const getAnimalDiseases = async () => {
