@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
-    "baseUrl": ".", // esto permite usar paths relativos al proyecto
-    "paths": {
-      "@/*": ["src/*"],
-      "include": ["src"]
-    }
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "ESNext"],
+    "jsx": "react-jsx",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }
