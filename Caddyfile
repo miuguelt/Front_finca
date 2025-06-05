@@ -1,0 +1,15 @@
+mifinca.isladigital.xyz {
+
+    root * /var/www/html
+    file_server
+
+    try_files {path} {path}/ /index.html
+
+    header {
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+    }
+
+    encode zstd gzip
+}
