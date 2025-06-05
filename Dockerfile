@@ -3,20 +3,18 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./ 
 RUN npm install 
-COPY . . 
-
-# Compila la aplicación Vite. Esto generará los archivos estáticos en la carpeta 'dist'.
+COPY . .
 RUN npm run build
 
 # Etapa 2: Servir la aplicación estática con Nginx
 FROM nginx:alpine 
-WORKDIR /usr/share/nginx/html 
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copia los archivos estáticos compilados desde la etapa 'builder'
-COPY --from=builder /app/dist .
+# Configuración crucial para SPA: manejo de rutas
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expone el puerto 80, que es donde Nginx escuchará dentro del contenedor
+# Headers para evitar caché (opcional pero recomendado)
+COPY headers.conf /etc/nginx/conf.d/headers.conf
+
 EXPOSE 80
-
-# Comando para iniciar Nginx en primer plano
 CMD ["nginx", "-g", "daemon off;"]
