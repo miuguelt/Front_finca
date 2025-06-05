@@ -1,22 +1,13 @@
-# Etapa 1: Construcción
-FROM node:20-alpine AS builder 
+# FASE 1: Construir el frontend con Vite
+FROM node:20-alpine as build-stage
 WORKDIR /app
-COPY package.json package-lock.json ./ 
-RUN npm install 
+COPY package*.json ./
+RUN npm install
 COPY . .
 RUN npm run build
 
-# Etapa 2: Producción
-FROM nginx:alpine 
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Instala envsubst para procesar variables
-RUN apk add --no-cache gettext
-
-# Script de entrada para procesar variables
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# FASE 2: Servir con Nginx
+FROM nginx:alpine
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
