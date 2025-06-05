@@ -1,3 +1,4 @@
+# Etapa 1: Build con Node
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -13,7 +14,15 @@ COPY . .
 
 RUN npx tsc -b && npx vite build
 
-# Etapa final: solo archivos estáticos
-FROM scratch
+# Etapa 2: Servir archivos estáticos con un servidor simple (serve)
+FROM node:20-alpine
 
-COPY --from=builder /app/dist /app/dist
+RUN npm install -g serve
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 80
+
+CMD ["serve", "-s", "dist", "-l", "80"]
