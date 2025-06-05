@@ -7,7 +7,8 @@ COPY package*.json tsconfig.json ./
 
 # Instalar dependencias del proyecto
 RUN npm install 
-
+ARG VITE_API_URL_ARG
+ENV VITE_API_URL=$VITE_API_URL_ARG
 # Copiar código fuente
 COPY . .
 
