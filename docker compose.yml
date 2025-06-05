@@ -1,26 +1,46 @@
-networks:
-  redbd:
-    external: true
+version: '3.8'
+
 services:
-  finca:
-    image: 'python:3.12-alpine'
+  frontend: 
     build:
-      context: 'https://github.com/miuguelt/fincaVillaLuz-main.git'
-      dockerfile: Dockerfile
+      context: "https://github.com/miuguelt/Front_finca.git" # URL del repositorio de tu aplicación
+      dockerfile: Dockerfile 
     restart: unless-stopped
-    environment:
-      - DB_USER=$DB_USER
-      - DB_PASSWORD=$DB_PASSWORD
-      - DB_HOST=$DB_HOST
-      - DB_PORT=$DB_PORT
-      - DB_NAME=$DB_NAME
     networks:
-      - redbd
-  mifinca:
-    build:
-      context: 'https://github.com/miuguelt/Front_finca.git'
-      dockerfile: Dockerfile
-    image: 'nginx:alpine'
-    restart: always
-    networks:
-      - redbd
+      coolify: null 
+    labels:
+      - 'caddy_0.enable=true'
+
+      - 'caddy_0.handle_host=mifinca.isladigital.xyz'
+
+      # --- Configuración SPA: ¡Esto resuelve el error 404 al recargar! ---
+      # Captura todas las rutas para este dominio.
+      - 'caddy_0.handle_path=/*'
+      # Si Caddy no encuentra un archivo estático para la ruta solicitada,
+      # sirve el 'index.html' de tu SPA.
+      - 'caddy_0.try_files={path} /index.html'
+
+      # Configura el proxy inverso para reenviar el tráfico a tu contenedor de frontend.
+      # Caddy reenviará al puerto 80, donde tu Nginx interno está escuchando.
+      - 'caddy_0.handle_path.0_reverse_proxy={{upstreams}}'
+
+      # Habilita la compresión GZIP para un mejor rendimiento (opcional pero recomendado).
+      - 'caddy_0.encode=gzip'
+
+      # Define el puerto interno del contenedor al que Caddy debe reenviar el tráfico.
+      # Tu Nginx interno escucha en el puerto 80.
+      - 'caddy_0.services.miapp-frontend.loadbalancer.server.port=80' # 'miapp-frontend' es un nombre de servicio interno de Caddy
+
+      # --- Configuración HTTPS automática con Let's Encrypt (gestionado por Coolify Caddy) ---
+      # Habilita TLS (HTTPS) para el dominio.
+      - 'caddy_0.tls=true'
+      # Configura el resolvedor de certificados. Coolify generalmente usa 'acme' o 'letsencrypt'.
+      # No necesitas un nombre específico de resolvedor de certificados si Coolify ya lo gestiona automáticamente.
+      # Esta etiqueta es a menudo opcional si Coolify ya se encarga de la provisión de certificados.
+      # Si tienes problemas con HTTPS, consulta la documentación de Coolify sobre certificados.
+      # - 'caddy_0.tls.issuer=letsencrypt' # O 'acme' si tu Caddy principal usa ese nombre
+
+
+networks:
+  coolify:
+    external: true 
