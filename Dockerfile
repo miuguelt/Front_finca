@@ -11,7 +11,7 @@ FROM nginx:alpine
 # Copia configuración personalizada de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copia los archivos estáticos del build de React
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
