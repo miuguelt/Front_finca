@@ -4,9 +4,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build  # Genera la carpeta dist/
+RUN npm run build
 
-# FASE 2: Copiar archivos estáticos a un volumen compartido
-FROM alpine:3.18
-WORKDIR /var/www/html
-COPY --from=build-stage /app/dist .
+# FASE 2: Servir contenido estático con Nginx
+FROM nginx:alpine
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
