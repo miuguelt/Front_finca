@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userData = res.data.logged_in_as;
     console.log("--------------Datos protegidos:-------------------", userData);
     if (userData) {
+      console.log("User found, navigating by role:-----------------------------", userData.role);
       setUser(userData);
       setRole(userData.role);
       setName(userData.fullname);
