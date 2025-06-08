@@ -26,9 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Verificar estado de autenticación al cargar
   useEffect(() => {
     const checkAuthStatus = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña pausa para asegurar cookies
-  
+      try {  
         const res = await api.get("/protected");
         const userData = res.data.logged_in_as;
         console.log(res)
