@@ -3,7 +3,7 @@ export type role = "Administrador" | "Instructor" | "Aprendiz";
 
 export interface User {
   id?: number ;
-  identification: number | string;
+  identification: string;
   fullname: string;
   email: string;
   phone: string;
@@ -25,7 +25,7 @@ export interface AuthContextType {
 
 // Definición de los tipos de datos usados en el login
 export interface LoginUser {
-  identification: number;
+  identification: string;
   password: string;
 }
 
