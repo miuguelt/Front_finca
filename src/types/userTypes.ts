@@ -15,7 +15,7 @@ export interface User {
 
 export type AuthContextType = {
   user: User | null;
-  login: (credentials: { identification: string; password: string }) => Promise<void>;
+  login: (credentials: { identification: string; password: string }) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   role: string | null;

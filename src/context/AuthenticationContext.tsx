@@ -1,15 +1,12 @@
-// src/context/AuthenticationContext.tsx
 import {
   createContext,
   useState,
   useEffect,
   ReactNode,
-  useContext,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, AuthContextType } from "@/types/userTypes";
 import api from "@/services/authService";
-
+import { User, AuthContextType } from "@/types/userTypes";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -19,17 +16,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Traer perfil usuario al montar componente para validar sesión
   useEffect(() => {
     const fetchProfile = async () => {
+      setIsLoading(true);
       try {
-        const res = await api.get("/protected"); // 👈 usa api.get
-        const data = res.data;
+        const res = await api.get("/protected");
+        const data = res.data; // Ajustar si backend devuelve { success, data }
         setUser(data);
         setRole(data.role);
         setName(data.fullname);
       } catch (error) {
         console.error("Error al verificar sesión:", error);
         setUser(null);
+        setRole(null);
+        setName(null);
       } finally {
         setIsLoading(false);
       }
@@ -37,40 +38,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchProfile();
   }, []);
 
+  // Login: envía credenciales, espera cookie, luego pide perfil
+  // Ya NO navega aquí
   const login = async (credentials: { identification: string; password: string }) => {
     setIsLoading(true);
     try {
-      await api.post("/login", credentials); // 👈 usa api.post
-      const res = await api.get("/protected");
-      const data = res.data;
+      await api.post("/login", credentials); // backend envía cookies HttpOnly
+      const res = await api.get("/protected"); // fetch perfil con cookies
+      const data = res.data; // Ajustar si backend devuelve { success, data }
       setUser(data);
       setRole(data.role);
       setName(data.fullname);
-      navigateBasedOnRole(data.role);
-    } catch (error: any) {
-      throw new Error("Credenciales inválidas");
+      return { success: true, role: data.role };
+    } catch (error) {
+      console.error("Error en login:", error);
+      setUser(null);
+      setRole(null);
+      setName(null);
+      return { success: false, message: "Credenciales inválidas" };
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = async () => {
+    setIsLoading(true);
     try {
-      await api.post("/logout"); // 👈 usa api.post
+      await api.post("/logout"); // backend elimina cookies
       setUser(null);
       setRole(null);
       setName(null);
       navigate("/login");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const navigateBasedOnRole = (role: string) => {
-    if (role === "Administrador") navigate("/admin");
-    else if (role === "Instructor") navigate("/instructor");
-    else if (role === "Aprendiz") navigate("/apprentice");
-    else navigate("/unauthorized");
   };
 
   const isAuthenticated = !!user;
@@ -82,12 +85,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de un AuthProvider");
-  }
-  return context;
 };

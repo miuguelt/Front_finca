@@ -1,6 +1,5 @@
-// src/pages/login/index.tsx
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthenticationContext";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,11 +33,23 @@ const LoginForm = () => {
     }
 
     try {
-      await login({ identification, password });
-      const redirectTo = location.state?.from?.pathname || "/";
-      navigate(redirectTo, { replace: true });
-    } catch (err: any) {
-      setError("Credenciales incorrectas.");
+      const result: { success: boolean; message?: string; role?: string } = await login({ identification, password });
+      if (result.success) {
+        // Redirigir según origen o rol
+        const from = (location.state as any)?.from?.pathname;
+        if (from) {
+          navigate(from, { replace: true });
+        } else {
+          if (result.role === "Administrador") navigate("/admin");
+          else if (result.role === "Instructor") navigate("/instructor");
+          else if (result.role === "Aprendiz") navigate("/apprentice");
+          else navigate("/unauthorized");
+        }
+      } else {
+        setError(result.message || "Credenciales incorrectas.");
+      }
+    } catch {
+      setError("Error inesperado.");
     }
   };
 
