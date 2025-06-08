@@ -13,15 +13,15 @@ export interface User {
   status: boolean | string;
 }
 
-export interface AuthContextType {
+export type AuthContextType = {
   user: User | null;
-  token: string | null;
+  login: (credentials: { identification: string; password: string }) => Promise<void>;
+  logout: () => Promise<void>;
+  isAuthenticated: boolean;
   role: string | null;
   name: string | null;
-  login: (token: string) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
+  isLoading: boolean;
+};
 
 // Definición de los tipos de datos usados en el login
 export interface LoginUser {
