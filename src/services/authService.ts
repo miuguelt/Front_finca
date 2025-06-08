@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true,
+  withCredentials: true, // Esto es crucial para enviar cookies
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -10,7 +10,7 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Instancia separada para refresh sin interceptores
+// Instancia separada para refresh (también con cookies)
 const refreshApi = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
@@ -23,28 +23,25 @@ const refreshApi = axios.create({
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (token: string) => void;
+  resolve: (value?: any) => void;
   reject: (err: any) => void;
 }> = [];
 
-function processQueue(error: any, token: string | null = null) {
+function processQueue(error: any) {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
       reject(error);
     } else {
-      resolve(token!);
+      resolve();
     }
   });
   failedQueue = [];
 }
 
 function redirectToLogin() {
-  // Limpiar estado
   isRefreshing = false;
   failedQueue = [];
-  delete api.defaults.headers.common['Authorization'];
   
-  // Redirigir solo si no estamos ya en login
   if (!window.location.pathname.includes('/login')) {
     window.location.href = "/login?expired=true";
   }
@@ -55,6 +52,13 @@ api.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
     
+    console.log('Interceptor error:', {
+      status: error.response?.status,
+      url: originalRequest.url,
+      message: error.response?.data?.msg || error.message,
+      retry: originalRequest._retry
+    });
+    
     // Solo manejar errores 401 y evitar requests ya procesados
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
@@ -62,19 +66,18 @@ api.interceptors.response.use(
 
     // Si es una petición a /refresh que falló, redirigir directamente
     if (originalRequest.url?.includes('/refresh')) {
+      console.log('Refresh endpoint failed, redirecting to login');
       redirectToLogin();
       return Promise.reject(error);
     }
 
     // Si ya estamos refrescando el token, agregar a la cola
     if (isRefreshing) {
+      console.log('Already refreshing, adding to queue');
       return new Promise((resolve, reject) => {
-        failedQueue.push({ 
-          resolve: (token: string) => {
-            originalRequest.headers['Authorization'] = `Bearer ${token}`;
-            resolve(api(originalRequest));
-          }, 
-          reject 
+        failedQueue.push({
+          resolve: () => resolve(api(originalRequest)),
+          reject
         });
       });
     }
@@ -85,28 +88,33 @@ api.interceptors.response.use(
 
     try {
       console.log('Attempting token refresh...');
+      
+      // Solo hacer POST a /refresh, las cookies se envían automáticamente
       const refreshResponse = await refreshApi.post("/refresh");
       
-      if (!refreshResponse.data?.accessToken) {
-        throw new Error('No access token received');
-      }
-
-      const newToken = refreshResponse.data.accessToken;
-      console.log('Token refreshed successfully');
+      console.log('Refresh response:', refreshResponse.status);
       
-      // Actualizar headers
-      api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-
+      // Con cookies, no necesitamos manejar tokens manualmente
+      // El backend debería actualizar las cookies automáticamente
+      
       // Procesar cola de peticiones pendientes
-      processQueue(null, newToken);
-
+      processQueue(null);
+      
       // Reintentar petición original
+      console.log('Retrying original request');
       return api(originalRequest);
 
     } catch (refreshError) {
       console.error('Token refresh failed:', refreshError);
-      processQueue(refreshError, null);
+      
+      // Verificar si es un error de red o del servidor
+      if (axios.isAxiosError(refreshError) && refreshError.response?.status === 401) {
+        console.log('Refresh token expired, redirecting to login');
+      } else {
+        console.log('Network or server error during refresh');
+      }
+      
+      processQueue(refreshError);
       redirectToLogin();
       return Promise.reject(refreshError);
     } finally {
