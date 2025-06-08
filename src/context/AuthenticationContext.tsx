@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const res = await api.get('/protected');
     console.log("Datos protegidos:", res.data);
     const userData = res.data.logged_in_as;
-
+    console.log("--------------Datos protegidos:-------------------", userData);
     if (userData) {
       setUser(userData);
       setRole(userData.role);
