@@ -82,6 +82,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       //   navigate("/login?session=expired", { replace: true });
       // }
       return { success: false, message: "Sesión inválida o expirada en el backend." };
+    } finally {
+      // Manejo de isLoading para fetchProfile
     }
   };
 
@@ -89,8 +91,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const initAuth = async () => {
       setIsLoading(true);
-      // Primero, intenta cargar de localStorage para una experiencia instantánea
-      const loadedFromLS = loadUserFromLocalStorage();
+      // Simplemente llama a loadUserFromLocalStorage. El valor de retorno no se necesita aquí.
+      loadUserFromLocalStorage(); // <-- FIX: No se asigna a 'loadedFromLS' si no se va a usar.
       
       // Si no se cargó nada de localStorage, o incluso si se cargó, 
       // siempre valida la sesión con el backend (fuente de verdad).

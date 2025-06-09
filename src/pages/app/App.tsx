@@ -1,4 +1,4 @@
-import { Route, Routes, Outlet } from "react-router-dom"; // Quita BrowserRouter de aquí
+import { Route, Routes } from "react-router-dom"; 
 
 import "./App.css";
 import { AuthProvider } from "@/context/AuthenticationContext";
@@ -54,7 +54,6 @@ import VaccinationList from "../dashboard/all/vaccinations";
 
 function App() {
   return (
-    // <BrowserRouter> // ELIMINA BrowserRouter de aquí, ya debe estar en main.tsx
     <AuthProvider>
       <Routes>
         {/* Rutas públicas */}
@@ -104,13 +103,11 @@ function App() {
         {/* El elemento padre es ProtectedRoute envolviendo DashboardLayout.
             Las rutas anidadas se renderizarán dentro de <Outlet /> en DashboardLayout. */}
         <Route
-          path="/admin" // Ruta base para el rol de Administrador
+          path="/admin" 
           element={
             <ProtectedRoute allowedRoles={["Administrador"]}>
-              <DashboardLayout role="administrador">
-                {/* <Outlet /> se renderizará aquí para las sub-rutas */}
-                <Outlet /> 
-              </DashboardLayout>
+              {/* <DashboardLayout> ya no recibe 'children' */}
+              <DashboardLayout role="administrador" /> 
             </ProtectedRoute>
           }
         >
@@ -151,12 +148,11 @@ function App() {
 
         {/* Rutas protegidas: Instructor */}
         <Route
-          path="/instructor" // Ruta base para el rol de Instructor
+          path="/instructor" 
           element={
             <ProtectedRoute allowedRoles={["Instructor"]}>
-              <DashboardLayout role="instructor">
-                <Outlet />
-              </DashboardLayout>
+              {/* <DashboardLayout> ya no recibe 'children' */}
+              <DashboardLayout role="instructor" />
             </ProtectedRoute>
           }
         >
@@ -189,17 +185,16 @@ function App() {
           <Route path="fieldList" element={<FieldList />} />
           <Route path="foodTypeCreate" element={<FoodTypeForm />} />
           <Route path="foodTypeList" element={<FoodTypeList />} />
-          <Route path="*" element={<NotFoundPage />} /> {/* Catch-all para /instructor/* */}
+          <Route path="*" element={<NotFoundPage />} /> 
         </Route>
 
         {/* Rutas protegidas: Aprendiz */}
         <Route
-          path="/apprentice" // Ruta base para el rol de Aprendiz
+          path="/apprentice" 
           element={
             <ProtectedRoute allowedRoles={["Aprendiz"]}>
-              <DashboardLayout role="aprendiz">
-                <Outlet />
-              </DashboardLayout>
+              {/* <DashboardLayout> ya no recibe 'children' */}
+              <DashboardLayout role="aprendiz" />
             </ProtectedRoute>
           }
         >
@@ -222,11 +217,10 @@ function App() {
           <Route path="fieldList" element={<FieldList />} />
           <Route path="foodTypeCreate" element={<FoodTypeForm />} />
           <Route path="foodTypeList" element={<FoodTypeList />} />
-          <Route path="*" element={<NotFoundPage />} /> {/* Catch-all para /apprentice/* */}
+          <Route path="*" element={<NotFoundPage />} /> 
         </Route>
       </Routes>
     </AuthProvider>
-    // </BrowserRouter> // ELIMINA BrowserRouter de aquí
   );
 }
 
