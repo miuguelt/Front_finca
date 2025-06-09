@@ -32,7 +32,10 @@ export const useControls = () => {
 
   const editControl = async (id: number, control: Control) => {
     try {
-      const result = await updateControl(id, control);
+      // Solo enviar los campos que espera el backend
+      const { animal_id, checkup_date, healt_status, description } = control;
+      const cleanControl = { animal_id, checkup_date, healt_status, description };
+      const result = await updateControl(id, cleanControl);
       setReload((prev) => !prev);
       return { success: true, data: result };
     } catch (err: any) {
