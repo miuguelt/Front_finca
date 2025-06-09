@@ -1,66 +1,24 @@
-import { useState, useEffect } from 'react';
-import { createControl, getControls, updateControl } from '@/services/controlService';
-import { Control } from '@/types/controlTypes';
-
-type ControlOperationResult = {
-  success: boolean;
-  message?: string;
-  data?: Control | null;
-};
+import { Control } from "@/types/controlTypes";
+import { createControl, updateControl } from "@/services/controlService";
 
 export const useControls = () => {
-  const [controls, setControls] = useState<Control[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [reload, setReload] = useState<boolean>(false);
-  
-  const fetchControls = async () => {
-    setLoading(true);
+  const addControl = async (control: Control) => {
     try {
-      const data = await getControls();
-      setControls(data);
-      return { success: true, data };
-    } catch (err) {
-      setError('Error al cargar el control genetico');
-      return { success: false, message: 'Error al cargar el control genetico' };
-    } finally {
-      setLoading(false);
+      const result = await createControl(control);
+      return { success: true, data: result };
+    } catch (err: any) {
+      return { success: false, message: err.message };
     }
   };
 
-  const addControl = async (controlData: Control): Promise<ControlOperationResult> => {
-    setLoading(true);
+  const editControl = async (id: number, control: Control) => {
     try {
-      const newControl = await createControl(controlData);
-      setControls((prev) => [...prev, newControl]);
-      setReload(!reload);
-      return { success: true, data: newControl };
-    } catch (err) {
-      setError('Error al agregar el control genetico');
-      return { success: false, message: 'Error al agregar el control genetico' };
-    } finally {
-      setLoading(false);
+      const result = await updateControl(id, control);
+      return { success: true, data: result };
+    } catch (err: any) {
+      return { success: false, message: err.message };
     }
   };
 
-  const editControl = async (id: number, controlData: Control): Promise<ControlOperationResult> => {
-    setLoading(true);
-    try {
-      const updatedControl = await updateControl(id, controlData);
-      setControls((prev) => prev.map((control) => (control.id === id ? updatedControl : control)));
-      setReload(!reload);
-      return { success: true, data: updatedControl };
-    } catch (err) {
-      setError('Error al actualizar el control genetico');
-      return { success: false, message: 'Error al actualizar el control genetico' };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchControls();
-  }, [reload]);
-
-  return { controls, loading, error, fetchControls, addControl, editControl };
+  return { addControl, editControl };
 };

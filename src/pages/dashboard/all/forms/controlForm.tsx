@@ -2,96 +2,152 @@ import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@nextui-org/react";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Control } from "@/types/controlTypes";
 import { useControls } from "@/hooks/control/useControl";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimals } from "@/hooks/animal/useAnimals";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+
 
 const ControlForm = () => {
   const location = useLocation();
   const { state } = location;
   const { animals } = useAnimals();
-  const { addControl, editControl } = useControls(); 
+  const { addControl, editControl } = useControls();
   const navigate = useNavigate();
   const { role } = useAuth();
 
-  const [formData, setFormData] = useState<Control>({
-    animal_id: 0,
-    checkup_date: "",
-    healt_status: "Exelente", 
-    description: "",
+  // Definir rutas de redirección según el rol
+  const rolePaths: { [key: string]: string } = {
+    Administrador: "/admin/controlList",
+    Instructor: "/instructor/controlList",
+    Aprendiz: "/apprentice/controlList",
+  };
+
+  // Inicializa el formulario correctamente para edición o inserción
+  const [formData, setFormData] = useState<Control>(() => {
+    if (state?.isEdit && state?.control) {
+      // Si es edición, toma los datos del control recibido
+      return {
+        ...state.control,
+        animal_id: state.control.animal_id || 0,
+        checkup_date: state.control.checkup_date || "",
+        healt_status: state.control.healt_status || "Exelente",
+        description: state.control.description || "",
+      };
+    }
+    // Si es inserción, valores por defecto
+    return {
+      animal_id: 0,
+      checkup_date: "",
+      healt_status: "Exelente",
+      description: "",
+    };
   });
 
-  const [formMessage, setFormMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [formMessage, setFormMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
+  // Actualiza el formulario si cambia el estado de edición/control
   useEffect(() => {
     if (state?.isEdit && state?.control) {
-      setFormData(state.control);
+      setFormData({
+        ...state.control,
+        animal_id: state.control.animal_id || 0,
+        checkup_date: state.control.checkup_date || "",
+        healt_status: state.control.healt_status || "Exelente",
+        description: state.control.description || "",
+      });
+    } else {
+      setFormData({
+        animal_id: 0,
+        checkup_date: "",
+        healt_status: "Exelente",
+        description: "",
+      });
     }
   }, [state]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormMessage(null); 
+    setFormMessage(null);
   };
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, healt_status: value as Control['healt_status'] }));
+    setFormData((prev) => ({
+      ...prev,
+      healt_status: value as Control["healt_status"],
+    }));
+    setFormMessage(null);
+  };
+
+  const handleAnimalChange = (key: string | number | null) => {
+    const selectedId = key ? parseInt(key.toString()) : 0;
+    setFormData((prev) => ({
+      ...prev,
+      animal_id: selectedId,
+    }));
     setFormMessage(null);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormMessage(null); 
+    setFormMessage(null);
 
     try {
       let result;
-      
-      if (state?.isEdit) {
-        if (formData.id !== undefined) {
-          result = await editControl(formData.id, formData);
-        } else {
-          setFormMessage({ type: 'error', text: "Error: ID de control no definido para la edición." });
-          return;
-        }
+      if (state?.isEdit && formData.id) {
+        result = await editControl(formData.id, formData);
       } else {
         result = await addControl(formData);
       }
 
       if (result.success) {
-        setFormMessage({ 
-          type: 'success', 
-          text: state?.isEdit ? "Control actualizado exitosamente." : "Control agregado exitosamente." 
+        setFormMessage({
+          type: "success",
+          text: state?.isEdit
+            ? "Control actualizado exitosamente."
+            : "Control creado exitosamente.",
         });
 
+        // ✅ Redirigimos según el rol después de 1 segundo
         setTimeout(() => {
-          const rolePaths: { [key: string]: string } = {
-            Administrador: "/admin/controlList",
-            Instructor: "/instructor/controlList",
-            Aprendiz: "/apprentice/controlList",
-          };
-          const path = role ? rolePaths[role] : null;
-          if (path) {
-            navigate(path);
+          if (role && rolePaths[role]) {
+            navigate(rolePaths[role]);
           } else {
-            navigate("/"); 
+            navigate("/");
           }
         }, 1000);
       } else {
-        setFormMessage({ 
-          type: 'error', 
-          text: result.message || "Ocurrió un error en la operación." 
-        });
+        throw new Error(result.message || "Ocurrió un error al guardar");
       }
     } catch (error) {
-      setFormMessage({ 
-        type: 'error', 
-        text: "Ocurrió un error inesperado al procesar la solicitud." 
+      console.error("Error en handleSubmit:", error);
+      setFormMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Ocurrió un error inesperado",
       });
     }
   };
@@ -115,22 +171,22 @@ const ControlForm = () => {
                   defaultItems={animals}
                   placeholder="Selecciona el animal"
                   className="max-w-2xl font-medium"
-                  selectedKey={formData.animal_id ? formData.animal_id.toString() : ""} 
-                  onSelectionChange={(key: any | null) => {
-                    const selectedId = key ? parseInt(key) : 0;
-                    setFormData((prev) => ({ ...prev, animal_id: selectedId }));
-                  }}
+                  selectedKey={
+                    formData.animal_id ? formData.animal_id.toString() : ""
+                  }
+                  onSelectionChange={handleAnimalChange}
                 >
                   {(item) => (
                     <AutocompleteItem
-                      key={item.idAnimal ? item.idAnimal.toString() : ""}
-                      value={item.idAnimal ? item.idAnimal.toString() : ""} 
+                      key={item.idAnimal?.toString() || ""}
+                      value={item.idAnimal?.toString() || ""}
                     >
                       {item.record}
                     </AutocompleteItem>
                   )}
                 </Autocomplete>
               </div>
+
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="checkup_date" className="text-sm font-medium">
                   Fecha de Revisión
@@ -145,12 +201,16 @@ const ControlForm = () => {
                   className="w-full"
                 />
               </div>
+
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="healt_status" className="text-sm font-medium">Estado de salud</Label>
+                <Label htmlFor="healt_status" className="text-sm font-medium">
+                  Estado de salud
+                </Label>
                 <Select
                   name="healt_status"
                   value={formData.healt_status}
-                  onValueChange={handleSelectChange}> 
+                  onValueChange={handleSelectChange}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccione el estado de salud" />
                   </SelectTrigger>
@@ -162,6 +222,7 @@ const ControlForm = () => {
                   </SelectContent>
                 </Select>
               </div>
+
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="description" className="text-sm font-medium">
                   Descripción
@@ -177,12 +238,20 @@ const ControlForm = () => {
                 />
               </div>
             </div>
+
             {formMessage && (
-              <p className={`mt-4 text-center text-sm ${formMessage.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+              <p
+                className={`mt-4 text-center text-sm ${
+                  formMessage.type === "success"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
                 {formMessage.text}
               </p>
             )}
           </CardContent>
+
           <CardFooter>
             <Button type="submit" className="w-48 m-auto">
               {state?.isEdit ? "Guardar Cambios" : "Agregar"}
