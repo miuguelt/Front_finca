@@ -6,19 +6,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 //Types
 import { Control } from "@/types/controlTypes"; // Asegúrate de que esta ruta es correcta
-import { useControls } from "@/hooks/control/useControls"; // <-- Asegúrate que usas 'useControls', no 'useControl'
+// <<<<<<<<<<<<<<<< CORRECCIÓN AQUÍ: Importar desde 'useControls' (plural) >>>>>>>>>>>>>>>>>>
+import { useControls } from "@/hooks/control/useControl"; 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimals } from "@/hooks/animal/useAnimals";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"; // Añadida importación de Card, CardHeader, etc.
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 
 const ControlForm = () => {
 
   const location = useLocation();
   const { state } = location;
   const { animals } = useAnimals();
-  const { addControl, editControl } = useControls(); // Usar el hook useControls
+  const { addControl, editControl } = useControls(); 
   const navigate = useNavigate();
   const { role } = useAuth();
 
@@ -26,17 +27,15 @@ const ControlForm = () => {
   const [formData, setFormData] = useState<Control>({
     animal_id: 0,
     checkup_date: "",
-    healt_status: "Exelente", // Asegúrate que 'Exelente' o 'Excelente' coincide con tu backend
+    healt_status: "Exelente", 
     description: "",
   });
 
-  // Estado para manejar el mensaje de éxito o error en el formulario
   const [formMessage, setFormMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
 
   useEffect(() => {
     if (state?.isEdit && state?.control) {
-      // Si es edición, prellenamos el formulario con los datos del control
       setFormData(state.control);
     }
   }, [state]);
@@ -45,7 +44,7 @@ const ControlForm = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormMessage(null); // Limpiar mensaje al cambiar el formulario
+    setFormMessage(null); 
   };
 
   const handleSelectChange = (value: string) => {
@@ -54,29 +53,27 @@ const ControlForm = () => {
   };
 
 
-  // <<<<<<<<<<<<<<<< CAMBIOS CLAVE AQUÍ >>>>>>>>>>>>>>>>>>
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => { // Marcar como async
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormMessage(null); // Limpiar mensajes anteriores
+    setFormMessage(null); 
 
     let result: { success: boolean; message?: string; data?: Control | null } | undefined;
 
     if (state?.isEdit) {
       if (formData.id !== undefined) {
-        result = await editControl(formData.id, formData); // Esperar la edición
+        result = await editControl(formData.id, formData); 
       } else {
         setFormMessage({ type: 'error', text: "Error: ID de control no definido para la edición." });
         return;
       }
     } else {
-      result = await addControl(formData); // Esperar la adición
+      result = await addControl(formData); 
     }
 
     if (result?.success) {
       setFormMessage({ type: 'success', text: state?.isEdit ? "Control actualizado exitosamente." : "Control agregado exitosamente." });
       console.log("Operación exitosa. Resultado:", result.data);
 
-      // Pequeño retardo para que el usuario vea el mensaje de éxito antes de navegar
       setTimeout(() => {
         const rolePaths: { [key: string]: string } = {
           Administrador: "/admin/controlList",
@@ -87,10 +84,9 @@ const ControlForm = () => {
         if (path) {
           navigate(path);
         } else {
-          // Fallback en caso de rol no reconocido
           navigate("/"); 
         }
-      }, 1000); // Espera 1 segundo
+      }, 1000); 
       
     } else {
       setFormMessage({ type: 'error', text: result?.message || "Ocurrió un error en la operación." });
@@ -117,7 +113,7 @@ const ControlForm = () => {
                   defaultItems={animals}
                   placeholder="Selecciona el animal"
                   className="max-w-2xl font-medium"
-                  selectedKey={formData.animal_id ? formData.animal_id.toString() : ""} // Asegúrate de manejar 0 o null si es inicial
+                  selectedKey={formData.animal_id ? formData.animal_id.toString() : ""} 
                   onSelectionChange={(key: any | null) => {
                     const selectedId = key ? parseInt(key) : 0;
                     setFormData((prev) => ({ ...prev, animal_id: selectedId }));
@@ -126,7 +122,7 @@ const ControlForm = () => {
                   {(item) => (
                     <AutocompleteItem
                       key={item.idAnimal ? item.idAnimal.toString() : ""}
-                      value={item.idAnimal ? item.idAnimal.toString() : ""} // Asegúrate de que 'value' es una cadena
+                      value={item.idAnimal ? item.idAnimal.toString() : ""} 
                     >
                       {item.record}
                     </AutocompleteItem>
@@ -152,7 +148,6 @@ const ControlForm = () => {
                 <Select
                   name="healt_status"
                   value={formData.healt_status}
-                  // Aquí usamos onValueChange para NextUI Select
                   onValueChange={handleSelectChange}> 
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccione el estado de salud" />
