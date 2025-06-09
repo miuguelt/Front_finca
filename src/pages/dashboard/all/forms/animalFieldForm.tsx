@@ -47,7 +47,7 @@ const AnimalFieldForm = () => {
 
 
   // Función para manejar el envío del formulario
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state?.isEdit) {
       if (formData.id !== undefined) {
@@ -62,7 +62,7 @@ const AnimalFieldForm = () => {
         console.log(formData);
       }
     } else {
-      addAnimalFields(formData);
+      await addAnimalFields(formData);
     }
     if (role == "Administrador") {
       navigate("/admin/animalFieldList");

@@ -70,7 +70,7 @@ const AnimalForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state?.isEdit) {
       if (formData.idAnimal !== undefined) {
@@ -87,7 +87,7 @@ const AnimalForm = () => {
         console.log(formData.weight);
       }
     } else {
-      addAnimal(formData);
+      await addAnimal(formData);
     }
 
     if (role == "Administrador") {
