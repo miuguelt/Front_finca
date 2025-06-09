@@ -46,7 +46,7 @@ const ControlForm = () => {
         ...state.control,
         animal_id: state.control.animal_id || 0,
         checkup_date: state.control.checkup_date || "",
-        healt_status: state.control.healt_status || "Exelente",
+        healt_status: state.control.healt_status || "Excelente",
         description: state.control.description || "",
       };
     }
@@ -54,7 +54,7 @@ const ControlForm = () => {
     return {
       animal_id: 0,
       checkup_date: "",
-      healt_status: "Exelente",
+      healt_status: "Excelente",
       description: "",
     };
   });
@@ -71,14 +71,14 @@ const ControlForm = () => {
         ...state.control,
         animal_id: state.control.animal_id || 0,
         checkup_date: state.control.checkup_date || "",
-        healt_status: state.control.healt_status || "Exelente",
+        healt_status: state.control.healt_status || "Excelente",
         description: state.control.description || "",
       });
     } else {
       setFormData({
         animal_id: 0,
         checkup_date: "",
-        healt_status: "Exelente",
+        healt_status: "Excelente",
         description: "",
       });
     }
@@ -215,7 +215,7 @@ const ControlForm = () => {
                     <SelectValue placeholder="Seleccione el estado de salud" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Exelente">Exelente</SelectItem>
+                    <SelectItem value="Excelente">Excelente</SelectItem>
                     <SelectItem value="Bueno">Bueno</SelectItem>
                     <SelectItem value="Regular">Regular</SelectItem>
                     <SelectItem value="Malo">Malo</SelectItem>

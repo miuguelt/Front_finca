@@ -1,4 +1,4 @@
-export type HealtStatus = "Exelente" | "Bueno" | "Regular" | "Malo";
+export type HealtStatus = "Excelente" | "Bueno" | "Regular" | "Malo";
 
 export interface Control {
   id?: number;
