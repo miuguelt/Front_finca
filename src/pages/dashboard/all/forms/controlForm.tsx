@@ -2,12 +2,9 @@ import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@nextui-org/react";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-//Types
-import { Control } from "@/types/controlTypes"; // Asegúrate de que esta ruta es correcta
-// <<<<<<<<<<<<<<<< CORRECCIÓN AQUÍ: Importar desde 'useControls' (plural) >>>>>>>>>>>>>>>>>>
-import { useControls } from "@/hooks/control/useControl"; 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Control } from "@/types/controlTypes";
+import { useControls } from "@/hooks/control/useControl";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimals } from "@/hooks/animal/useAnimals";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
@@ -15,14 +12,12 @@ import { useAuth } from "@/hooks/auth/useAuth";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 
 const ControlForm = () => {
-
   const location = useLocation();
   const { state } = location;
   const { animals } = useAnimals();
   const { addControl, editControl } = useControls(); 
   const navigate = useNavigate();
   const { role } = useAuth();
-
 
   const [formData, setFormData] = useState<Control>({
     animal_id: 0,
@@ -33,13 +28,11 @@ const ControlForm = () => {
 
   const [formMessage, setFormMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-
   useEffect(() => {
     if (state?.isEdit && state?.control) {
       setFormData(state.control);
     }
   }, [state]);
-
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -52,45 +45,54 @@ const ControlForm = () => {
     setFormMessage(null);
   };
 
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormMessage(null); 
 
-    let result: { success: boolean; message?: string; data?: Control | null } | undefined;
-
-    if (state?.isEdit) {
-      if (formData.id !== undefined) {
-        result = await editControl(formData.id, formData); 
-      } else {
-        setFormMessage({ type: 'error', text: "Error: ID de control no definido para la edición." });
-        return;
-      }
-    } else {
-      result = await addControl(formData); 
-    }
-
-    if (result?.success) {
-      setFormMessage({ type: 'success', text: state?.isEdit ? "Control actualizado exitosamente." : "Control agregado exitosamente." });
-      console.log("Operación exitosa. Resultado:", result.data);
-
-      setTimeout(() => {
-        const rolePaths: { [key: string]: string } = {
-          Administrador: "/admin/controlList",
-          Instructor: "/instructor/controlList",
-          Aprendiz: "/apprentice/controlList",
-        };
-        const path = role ? rolePaths[role] : null;
-        if (path) {
-          navigate(path);
-        } else {
-          navigate("/"); 
-        }
-      }, 1000); 
+    try {
+      let result;
       
-    } else {
-      setFormMessage({ type: 'error', text: result?.message || "Ocurrió un error en la operación." });
-      console.error("Fallo en la operación. Mensaje:", result?.message);
+      if (state?.isEdit) {
+        if (formData.id !== undefined) {
+          result = await editControl(formData.id, formData);
+        } else {
+          setFormMessage({ type: 'error', text: "Error: ID de control no definido para la edición." });
+          return;
+        }
+      } else {
+        result = await addControl(formData);
+      }
+
+      if (result.success) {
+        setFormMessage({ 
+          type: 'success', 
+          text: state?.isEdit ? "Control actualizado exitosamente." : "Control agregado exitosamente." 
+        });
+
+        setTimeout(() => {
+          const rolePaths: { [key: string]: string } = {
+            Administrador: "/admin/controlList",
+            Instructor: "/instructor/controlList",
+            Aprendiz: "/apprentice/controlList",
+          };
+          const path = role ? rolePaths[role] : null;
+          if (path) {
+            navigate(path);
+          } else {
+            navigate("/"); 
+          }
+        }, 1000);
+      } else {
+        setFormMessage({ 
+          type: 'error', 
+          text: result.message || "Ocurrió un error en la operación." 
+        });
+      }
+    } catch (error) {
+      setFormMessage({ 
+        type: 'error', 
+        text: "Ocurrió un error inesperado al procesar la solicitud." 
+      });
     }
   };
 
