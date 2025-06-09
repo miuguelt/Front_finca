@@ -1,30 +1,29 @@
-import { useRoutes, BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, Outlet } from "react-router-dom"; // Quita BrowserRouter de aquí
 
 import "./App.css";
 import { AuthProvider } from "@/context/AuthenticationContext";
 import ProtectedRoute from "@/components/routes/PrivateRoutes";
 
-//Paginas de rutas
+// Páginas generales
 import LandingPage from "../landing";
 import LoginForm from "../login";
 import Layout from "@/components/landing/Layout";
 import NotFoundPage from "../notFound";
 import SignUpForm from "../signUp";
-
-//Rutas Admin
-import AdminHome from "../dashboard/admin/home";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import UnauthorizedPage from "../unauthorized";
+
+// Componentes de Dashboard
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+
+// Rutas específicas
+import AdminHome from "../dashboard/admin/home";
 import UserForm from "../dashboard/admin/userForm";
 import UserList from "../dashboard/admin/user";
 
-//Rutas Instructor
 import InstructorHome from "../dashboard/instructor/home";
-
-//Rutas Aprendiz
 import ApprenticeHome from "../dashboard/apprentice/home";
 
-//Rutas Admin e Instructor
+// Compartidas entre admin e instructor
 import AnimalForm from "../dashboard/all/forms/animalForm";
 import AnimalList from "../dashboard/all/animals";
 import DiseaseAnimalForm from "../dashboard/all/forms/diseaseAnimalForm";
@@ -53,168 +52,181 @@ import VaccinesList from "../dashboard/all/vaccines";
 import VaccinationForm from "../dashboard/all/forms/vaccinationForm";
 import VaccinationList from "../dashboard/all/vaccinations";
 
-const MainRoutes = () => {
-  let routes = useRoutes([
-    { path: "/", element: <LandingPage /> },
-    { path: "/login", element: <LoginForm /> },
-    { path: "/signUp", element: <SignUpForm /> },
-    { path: "/unauthorized", element: <UnauthorizedPage /> },
-    { path: "/*", element: <NotFoundPage /> },
-  ]);
-  return routes;
-};
-
-const AdminRoutes = () => {
-  let routes = useRoutes([
-    { path: "/", element: <AdminHome /> },
-    { path: "userCreate", element: <UserForm /> },
-    { path: "userList", element: <UserList /> },
-    { path: "animalCreate", element: <AnimalForm /> },
-    { path: "animalList", element: <AnimalList /> },
-    { path: "improvedAnimalCreate", element: <ImprovedAnimalForm /> },
-    { path: "improvedAnimalList", element: <GeneticList /> },
-    { path: "animalDiseaseCreate", element: <DiseaseAnimalForm /> },
-    { path: "animalDiseaseList", element: <DiseaseAnimalList /> },
-    { path: "breedCreate", element: <BreedForm /> },
-    { path: "specieCreate", element: <SpecieForm /> },
-    { path: "speciesAndBreedsList", element: <SpeciesAndBreedsList /> },
-    { path: "controlCreate", element: <ControlForm /> },
-    { path: "controlList", element: <ControlList /> },
-    { path: "diseaseCreate", element: <DiseaseForm /> },
-    { path: "diseaseList", element: <DiseaseList /> },
-    { path: "medicineCreate", element: <MedicineForm /> },
-    { path: "medicineList", element: <MedicationList /> },
-    { path: "vaccineCreate", element: <VaccineForm /> },
-    { path: "vaccineList", element: <VaccinesList /> },
-    { path: "vaccinationCreate", element: <VaccinationForm /> },
-    { path: "vaccinationList", element: <VaccinationList /> },
-    { path: "treatmentCreate", element: <TreatmentForm /> },
-    { path: "treatmentList", element: <TreatmentsList /> },
-    { path: "animalFieldCreate", element: <AnimalFieldForm /> },
-    { path: "animalFieldList", element: <AnimalFieldList /> },
-    { path: "fieldCreate", element: <FieldForm /> },
-    { path: "fieldList", element: <FieldList /> },
-    { path: "foodTypeCreate", element: <FoodTypeForm /> },
-    { path: "foodTypeList", element: <FoodTypeList /> },
-    { path: "/*", element: <NotFoundPage /> },
-  ]);
-  return routes;
-};
-
-const InstructorRoutes = () => {
-  let routes = useRoutes([
-    { path: "/", element: <InstructorHome /> },
-    { path: "/*", element: <NotFoundPage /> },
-    { path: "animalCreate", element: <AnimalForm /> },
-    { path: "animalList", element: <AnimalList /> },
-    { path: "improvedAnimalCreate", element: <ImprovedAnimalForm /> },
-    { path: "improvedAnimalList", element: <GeneticList /> },
-    { path: "animalDiseaseCreate", element: <DiseaseAnimalForm /> },
-    { path: "animalDiseaseList", element: <DiseaseAnimalList /> },
-    { path: "breedCreate", element: <BreedForm /> },
-    { path: "specieCreate", element: <SpecieForm /> },
-    { path: "speciesAndBreedsList", element: <SpeciesAndBreedsList /> },
-    { path: "controlCreate", element: <ControlForm /> },
-    { path: "controlList", element: <ControlList /> },
-    { path: "diseaseCreate", element: <DiseaseForm /> },
-    { path: "diseaseList", element: <DiseaseList /> },
-    { path: "medicineCreate", element: <MedicineForm /> },
-    { path: "medicineList", element: <MedicationList /> },
-    { path: "vaccineCreate", element: <VaccineForm /> },
-    { path: "vaccineList", element: <VaccinesList /> },
-    { path: "vaccinationCreate", element: <VaccinationForm /> },
-    { path: "vaccinationList", element: <VaccinationList /> },
-    { path: "treatmentCreate", element: <TreatmentForm /> },
-    { path: "treatmentList", element: <TreatmentsList /> },
-    { path: "animalFieldCreate", element: <AnimalFieldForm /> },
-    { path: "animalFieldList", element: <AnimalFieldList /> },
-    { path: "fieldCreate", element: <FieldForm /> },
-    { path: "fieldList", element: <FieldList /> },
-    { path: "foodTypeCreate", element: <FoodTypeForm /> },
-    { path: "foodTypeList", element: <FoodTypeList /> },
-  ]);
-  return routes;
-};
-
-const ApprenticeRoutes = () => {
-  let routes = useRoutes([
-    { path: "/", element: <ApprenticeHome /> },
-    { path: "animalCreate", element: <AnimalForm /> },
-    { path: "animalList", element: <AnimalList /> },
-    { path: "animalDiseaseCreate", element: <DiseaseAnimalForm /> },
-    { path: "animalDiseaseList", element: <DiseaseAnimalList /> },
-    { path: "breedCreate", element: <BreedForm /> },
-    { path: "specieCreate", element: <SpecieForm /> },
-    { path: "speciesAndBreedsList", element: <SpeciesAndBreedsList /> },
-    { path: "controlCreate", element: <ControlForm /> },
-    { path: "controlList", element: <ControlList /> },
-    { path: "animalFieldCreate", element: <AnimalFieldForm /> },
-    { path: "animalFieldList", element: <AnimalFieldList /> },
-    { path: "improvedAnimalCreate", element: <ImprovedAnimalForm /> },
-    { path: "improvedAnimalList", element: <GeneticList /> },
-    { path: "fieldCreate", element: <FieldForm /> },
-    { path: "fieldList", element: <FieldList /> },
-    { path: "foodTypeCreate", element: <FoodTypeForm /> },
-    { path: "foodTypeList", element: <FoodTypeList /> },
-    { path: "/*", element: <NotFoundPage /> },
-  ]);
-  return routes;
-};
-
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route
-            path="/*"
-            element={
-              <Layout>
-                <MainRoutes />
-              </Layout>
-            }
-          />
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute allowedRoles={["Administrador"]}>
-                <DashboardLayout role="administrador">
-                  <AdminRoutes />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/instructor/*"
-            element={
-              <ProtectedRoute allowedRoles={["Instructor"]}>
-                <DashboardLayout role="instructor">
-                  <InstructorRoutes />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/apprentice/*"
-            element={
-              <ProtectedRoute allowedRoles={["Aprendiz"]}>
-                <DashboardLayout role="aprendiz">
-                  <ApprenticeRoutes />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          {/* <Route
-            path="/*"
-            element={
-              <Layout>
-                <MainRoutes />
-              </Layout>
-            }
-          /> */}
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+    // <BrowserRouter> // ELIMINA BrowserRouter de aquí, ya debe estar en main.tsx
+    <AuthProvider>
+      <Routes>
+        {/* Rutas públicas */}
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <LandingPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Layout>
+              <LoginForm />
+            </Layout>
+          }
+        />
+        <Route
+          path="/signUp"
+          element={
+            <Layout>
+              <SignUpForm />
+            </Layout>
+          }
+        />
+        <Route
+          path="/unauthorized"
+          element={
+            <Layout>
+              <UnauthorizedPage />
+            </Layout>
+          }
+        />
+        {/* La ruta catch-all para public se queda aquí */}
+        <Route
+          path="*"
+          element={
+            <Layout>
+              <NotFoundPage />
+            </Layout>
+          }
+        />
+
+        {/* Rutas protegidas: Administrador */}
+        {/* El elemento padre es ProtectedRoute envolviendo DashboardLayout.
+            Las rutas anidadas se renderizarán dentro de <Outlet /> en DashboardLayout. */}
+        <Route
+          path="/admin" // Ruta base para el rol de Administrador
+          element={
+            <ProtectedRoute allowedRoles={["Administrador"]}>
+              <DashboardLayout role="administrador">
+                {/* <Outlet /> se renderizará aquí para las sub-rutas */}
+                <Outlet /> 
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        >
+          {/* Rutas anidadas para Administrador. 
+              El index renderiza el home del admin cuando la ruta es exactamente /admin */}
+          <Route index element={<AdminHome />} />
+          <Route path="userCreate" element={<UserForm />} />
+          <Route path="userList" element={<UserList />} />
+          <Route path="animalCreate" element={<AnimalForm />} />
+          <Route path="animalList" element={<AnimalList />} />
+          <Route path="improvedAnimalCreate" element={<ImprovedAnimalForm />} />
+          <Route path="improvedAnimalList" element={<GeneticList />} />
+          <Route path="animalDiseaseCreate" element={<DiseaseAnimalForm />} />
+          <Route path="animalDiseaseList" element={<DiseaseAnimalList />} />
+          <Route path="breedCreate" element={<BreedForm />} />
+          <Route path="specieCreate" element={<SpecieForm />} />
+          <Route path="speciesAndBreedsList" element={<SpeciesAndBreedsList />} />
+          <Route path="controlCreate" element={<ControlForm />} />
+          <Route path="controlList" element={<ControlList />} />
+          <Route path="diseaseCreate" element={<DiseaseForm />} />
+          <Route path="diseaseList" element={<DiseaseList />} />
+          <Route path="medicineCreate" element={<MedicineForm />} />
+          <Route path="medicineList" element={<MedicationList />} />
+          <Route path="vaccineCreate" element={<VaccineForm />} />
+          <Route path="vaccineList" element={<VaccinesList />} />
+          <Route path="vaccinationCreate" element={<VaccinationForm />} />
+          <Route path="vaccinationList" element={<VaccinationList />} />
+          <Route path="treatmentCreate" element={<TreatmentForm />} />
+          <Route path="treatmentList" element={<TreatmentsList />} />
+          <Route path="animalFieldCreate" element={<AnimalFieldForm />} />
+          <Route path="animalFieldList" element={<AnimalFieldList />} />
+          <Route path="fieldCreate" element={<FieldForm />} />
+          <Route path="fieldList" element={<FieldList />} />
+          <Route path="foodTypeCreate" element={<FoodTypeForm />} />
+          <Route path="foodTypeList" element={<FoodTypeList />} />
+          <Route path="*" element={<NotFoundPage />} /> {/* Catch-all para /admin/* */}
+        </Route>
+
+        {/* Rutas protegidas: Instructor */}
+        <Route
+          path="/instructor" // Ruta base para el rol de Instructor
+          element={
+            <ProtectedRoute allowedRoles={["Instructor"]}>
+              <DashboardLayout role="instructor">
+                <Outlet />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        >
+          {/* Rutas anidadas para Instructor */}
+          <Route index element={<InstructorHome />} />
+          <Route path="animalCreate" element={<AnimalForm />} />
+          <Route path="animalList" element={<AnimalList />} />
+          <Route path="improvedAnimalCreate" element={<ImprovedAnimalForm />} />
+          <Route path="improvedAnimalList" element={<GeneticList />} />
+          <Route path="animalDiseaseCreate" element={<DiseaseAnimalForm />} />
+          <Route path="animalDiseaseList" element={<DiseaseAnimalList />} />
+          <Route path="breedCreate" element={<BreedForm />} />
+          <Route path="specieCreate" element={<SpecieForm />} />
+          <Route path="speciesAndBreedsList" element={<SpeciesAndBreedsList />} />
+          <Route path="controlCreate" element={<ControlForm />} />
+          <Route path="controlList" element={<ControlList />} />
+          <Route path="diseaseCreate" element={<DiseaseForm />} />
+          <Route path="diseaseList" element={<DiseaseList />} />
+          <Route path="medicineCreate" element={<MedicineForm />} />
+          <Route path="medicineList" element={<MedicationList />} />
+          <Route path="vaccineCreate" element={<VaccineForm />} />
+          <Route path="vaccineList" element={<VaccinesList />} />
+          <Route path="vaccinationCreate" element={<VaccinationForm />} />
+          <Route path="vaccinationList" element={<VaccinationList />} />
+          <Route path="treatmentCreate" element={<TreatmentForm />} />
+          <Route path="treatmentList" element={<TreatmentsList />} />
+          <Route path="animalFieldCreate" element={<AnimalFieldForm />} />
+          <Route path="animalFieldList" element={<AnimalFieldList />} />
+          <Route path="fieldCreate" element={<FieldForm />} />
+          <Route path="fieldList" element={<FieldList />} />
+          <Route path="foodTypeCreate" element={<FoodTypeForm />} />
+          <Route path="foodTypeList" element={<FoodTypeList />} />
+          <Route path="*" element={<NotFoundPage />} /> {/* Catch-all para /instructor/* */}
+        </Route>
+
+        {/* Rutas protegidas: Aprendiz */}
+        <Route
+          path="/apprentice" // Ruta base para el rol de Aprendiz
+          element={
+            <ProtectedRoute allowedRoles={["Aprendiz"]}>
+              <DashboardLayout role="aprendiz">
+                <Outlet />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        >
+          {/* Rutas anidadas para Aprendiz */}
+          <Route index element={<ApprenticeHome />} />
+          <Route path="animalCreate" element={<AnimalForm />} />
+          <Route path="animalList" element={<AnimalList />} />
+          <Route path="animalDiseaseCreate" element={<DiseaseAnimalForm />} />
+          <Route path="animalDiseaseList" element={<DiseaseAnimalList />} />
+          <Route path="breedCreate" element={<BreedForm />} />
+          <Route path="specieCreate" element={<SpecieForm />} />
+          <Route path="speciesAndBreedsList" element={<SpeciesAndBreedsList />} />
+          <Route path="controlCreate" element={<ControlForm />} />
+          <Route path="controlList" element={<ControlList />} />
+          <Route path="animalFieldCreate" element={<AnimalFieldForm />} />
+          <Route path="animalFieldList" element={<AnimalFieldList />} />
+          <Route path="improvedAnimalCreate" element={<ImprovedAnimalForm />} />
+          <Route path="improvedAnimalList" element={<GeneticList />} />
+          <Route path="fieldCreate" element={<FieldForm />} />
+          <Route path="fieldList" element={<FieldList />} />
+          <Route path="foodTypeCreate" element={<FoodTypeForm />} />
+          <Route path="foodTypeList" element={<FoodTypeList />} />
+          <Route path="*" element={<NotFoundPage />} /> {/* Catch-all para /apprentice/* */}
+        </Route>
+      </Routes>
+    </AuthProvider>
+    // </BrowserRouter> // ELIMINA BrowserRouter de aquí
   );
 }
 

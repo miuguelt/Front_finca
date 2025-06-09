@@ -1,16 +1,17 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './pages/app/App.tsx';
-import { NextUIProvider } from '@nextui-org/react';
-import { AuthProvider } from '@/context/AuthenticationContext'; // 👈 IMPORTANTE
-import './index.css';
+// main.tsx (o index.tsx)
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom' // <- Asegúrate de que está aquí
+import App from './pages/app/App'
+import { NextUIProvider } from '@nextui-org/react'
+import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <NextUIProvider>
-      <AuthProvider> {/* 👈 Aquí envuelves tu App */}
+      <BrowserRouter> {/* <- EL BrowserRouter DEBE ESTAR AQUÍ Y SOLO AQUÍ */}
         <App />
-      </AuthProvider>
+      </BrowserRouter>
     </NextUIProvider>
-  </StrictMode>
-);
+  </StrictMode>,
+)
